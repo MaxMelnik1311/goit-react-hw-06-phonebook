@@ -1,13 +1,20 @@
 import React from 'react';
 import T from 'prop-types';
 import { connect } from 'react-redux';
+import { deleteContact } from '../../redux/phoneBook/phoneBookActions';
 import Contact from './Contact';
 
-function ContactList({ contactList }) {
+function ContactList({ contactList, deleteItem }) {
   return (
     <ul>
-      {contactList.map(({ id }) => (
-        <Contact key={id} id={id} />
+      {contactList.map(({ id, name, number }) => (
+        <Contact
+          key={id}
+          id={id}
+          name={name}
+          number={number}
+          removeContact={() => deleteItem(id)}
+        />
       ))}
     </ul>
   );
@@ -15,16 +22,26 @@ function ContactList({ contactList }) {
 
 ContactList.propTypes = {
   contactList: T.arrayOf({}).isRequired,
+  deleteItem: T.func.isRequired,
 };
 
-const mapStateToProps = state => {
-  const visibleContacts = state.phonebook.contacts.filter(contact =>
-    contact.name.toLowerCase().includes(state.phonebook.filter.toLowerCase()),
+const mapStateToProps = ({ phonebook }, { id }) => {
+  const visibleContacts = phonebook.contacts.filter(contact =>
+    contact.name.toLowerCase().includes(phonebook.filter.toLowerCase()),
   );
+  const contact = phonebook.contacts.find(item => item.id === id);
 
   return {
     contactList: visibleContacts,
+    ...contact,
   };
 };
 
-export default connect(mapStateToProps)(ContactList);
+const mapDispatchToProps = dispatch => ({
+  deleteItem: id => dispatch(deleteContact(id)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ContactList);

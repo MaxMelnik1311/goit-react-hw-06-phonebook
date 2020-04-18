@@ -11,7 +11,7 @@ import {
 const contacts = createReducer([], {
   [addContact.type]: (state, { payload }) => [...state, payload.contact],
   [deleteContact.type]: (state, { payload }) =>
-    state.filter(element => payload !== element.id),
+    state.filter(contact => payload !== contact.id),
 });
 
 const filter = createReducer('', {
