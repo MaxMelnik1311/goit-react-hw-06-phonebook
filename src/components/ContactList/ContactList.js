@@ -29,11 +29,9 @@ const mapStateToProps = ({ phonebook }, { id }) => {
   const visibleContacts = phonebook.contacts.filter(contact =>
     contact.name.toLowerCase().includes(phonebook.filter.toLowerCase()),
   );
-  const contact = phonebook.contacts.find(item => item.id === id);
 
   return {
     contactList: visibleContacts,
-    ...contact,
   };
 };
 
